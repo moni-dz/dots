@@ -12,10 +12,10 @@ while :; do
     #WIFI=$(nmcli -p d | awk '/wlo1/{print $4; exit}')
 
     if [ "$WIRED_STATE" = 'connected' ]; then
-        echo '   Connected'; sleep 2
+        echo '  Connected'; sleep 2
     elif [ "$WIFI_STATE" = 'connected' ]; then
-        echo '   Connected'; sleep 2
+        echo '  Connected'; sleep 2
     else
-        echo ' 睊  Disconnected'; sleep 0.5
+        echo '睊  Disconnected'; sleep 0.5
     fi
 done

@@ -3,12 +3,12 @@
 
 screenshot() {
 	case $1 in
-	full)
-		maim -s | xclip -selection clipboard -t image/png
+	area)
+		selection=$(hacksaw -c b84b33 -f "-i %i -g %g")
+		shotgun $selection - | xclip -t 'image/png' -selection clipboard
 		;;
-	window)
-		sleep 1
-		maim ~/Pictures/screenshots/$(date +%s).png
+	full)
+		shotgun ~/Pictures/screenshots/$(date +%s).png
 		;;
 	*)
 		;;
