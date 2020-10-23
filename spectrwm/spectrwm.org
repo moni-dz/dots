@@ -1,0 +1,195 @@
+#+TITLE: SpectrWM Literate Configuration
+#+AUTHOR: fortuneteller2k
+#+STARTUP: showeverything
+#+PROPERTY: header-args :tangle spectrwm.conf
+
+* Table of Contents :TOC:
+- [[#general-wm-settings][General WM Settings]]
+  - [[#mod-key][Mod Key]]
+- [[#bar-settings][Bar Settings]]
+- [[#autoruns][Autoruns]]
+- [[#programs][Programs]]
+- [[#keybindings][Keybindings]]
+- [[#quirks][Quirks]]
+
+* General WM Settings
+I like many workspaces, but not too much so I think 9 is the perfect amount.
+
+I keep the other settings to their sane default's, with the exception of =warp_pointer=,
+it annoys be when the cursor centers after changing workspaces so we disable that.
+
+#+begin_src conf
+workspace_limit = 9
+focus_mode = default
+focus_close = previous
+focus_close_wrap = 1
+focus_default = last
+spawn_position = next
+workspace_clamp = 1
+warp_focus = 1
+warp_pointer = 0
+border_width = 0
+color_focus = rgb:52/90/67
+color_focus_maximized = rgb:41/6b/a0
+color_unfocus = rgb:b8/4b/33
+color_unfocus_maximized = rgb:9f/af/94
+region_padding = 0
+tile_gap = 0
+dialog_ratio = 0.8
+region = screen[1]:1366x750+0+18
+# region = screen[1]:1366x768+0+0
+disable_border = 0
+#+end_src
+
+** Mod Key
+*ALT is the one true MOD key.*
+#+begin_src conf
+modkey = Mod1
+#+end_src
+
+* Bar Settings
+Settings for =spectrwm='s built in bar.
+I don't use the default bar so we disable it.
+However, we put our =polybar= launch script in =bar_action= so it reloads every time we reload the WM.
+
+#+begin_src conf
+bar_enabled = 0
+bar_enabled_ws[1] = 1
+bar_border_width = 1
+bar_border[1] = rgb:00/80/80
+bar_border_unfocus[1] = rgb:00/40/40
+bar_color[1] = black
+bar_color_selected[1] = rgb:00/80/80
+bar_font_color[1] = rgb:a0/a0/a0
+bar_font_color_selected = black
+bar_font = Fantasque Sans Mono:pixelsize=16:antialias=true
+bar_font_pua = Typicons:pixelsize=14:antialias=true
+bar_action = ~/.config/polybar/launch.sh
+bar_action_expand = 0
+bar_justify = left
+bar_format = +N:+I +S <+D>+4<%a %b %d %R %Z %Y+8<+A+4<+V
+workspace_indicator = listcurrent,listactive,markcurrent,printnames
+bar_at_bottom = 0
+stack_enabled = 0
+clock_enabled = 0
+clock_format = %a %b %d %R %Z %Y
+iconic_enabled = 0
+maximize_hide_bar = 0
+window_class_enabled = 0
+window_instance_enabled = 0
+window_name_enabled = 0
+verbose_layout = 0
+urgent_enabled = 0
+urgent_collapse = 0
+#+end_src
+
+* Autoruns
+We can define programs we want to start when X11 starts.
+
+The syntax is as follows:
+#+begin_quote
+=autorun = ws[x]:program= where:
+
+=x= - is the workspace number you want =program= to be in
+=program= - is the program you want to run
+#+end_quote
+
+#+begin_src conf
+autorun = ws[1]:picom
+autorun = ws[1]:xss-lock slock
+autorun = ws[1]:wal -R
+autorun = ws[1]:premid
+#+end_src
+
+* Programs
+Here we define executables that we want to use keybindings for.
+
+To define a program:
+#+begin_quote
+=program[name] = /path/to/executable=
+#+end_quote
+
+#+begin_src conf
+program[lock] = slock
+program[term] = st
+program[menu] = ~/.local/bin/dmenu_run_history
+program[screenshot_area] = ~/.config/spectrwm/scripts/screenshot.sh area
+program[screenshot_full] = ~/.config/spectrwm/scripts/screenshot.sh full
+program[browser] = brave
+program[raise_volume] = ~/.config/spectrwm/scripts/volume.sh up
+program[lower_volume] = ~/.config/spectrwm/scripts/volume.sh down
+program[mute_volume] = ~/.config/spectrwm/scripts/volume.sh mute
+program[raise_brightness] = ~/.config/spectrwm/scripts/brightness.sh up
+program[lower_brightness] = ~/.config/spectrwm/scripts/brightness.sh down
+program[editor] = emacsclient -nc
+#+end_src
+
+* Keybindings
+Highly opinionated set of keybindings optimized for my use.
+
+We can bind programs or WM actions like this:
+#+begin_quote
+=bind[program] = MOD+<key>=
+#+end_quote
+And unbind programs or WM actions like this:
+#+begin_quote
+In the case of Emacs, whose =M-x= binding conflicts with =spectrwm='s MOD+x for
+=wind_del=,
+
+=bind[] = MOD+x=
+#+end_quote
+
+#+begin_src conf
+bind[] = MOD+x
+bind[] = MOD+q
+bind[] = MOD+w
+bind[] = MOD+s
+bind[term] = MOD+Return
+bind[menu] = MOD+d
+bind[float_toggle] = MOD+t
+bind[lock] = MOD+Shift+Delete
+bind[master_grow] = MOD+equal
+bind[master_shrink] = MOD+minus
+bind[quit] = MOD+Control+q
+bind[restart] = MOD+Shift+r
+bind[screenshot_area] = MOD+Print
+bind[screenshot_full] = MOD+Shift+s
+bind[swap_next] = MOD+Shift+j
+bind[swap_prev] = MOD+Shift+k
+bind[swap_main] = MOD+s
+bind[wind_del] = MOD+q
+bind[wind_kill] = MOD+Shift+c
+bind[browser] = MOD+F2
+bind[raise_volume] = XF86AudioRaiseVolume
+bind[lower_volume] = XF86AudioLowerVolume
+bind[mute_volume] = XF86AudioMute
+bind[raise_brightness] = XF86MonBrightnessUp
+bind[lower_brightness] = XF86MonBrightnessDown
+bind[editor] = MOD+w
+#+end_src
+
+* Quirks
+Quirks have to be my favorite feature in =spectrwm=, it allows assigning properties to
+programs that behave differently in WMs.
+
+Some of the quirks I use are:
+#+begin_quote
+=FLOAT= - This window should not be tiled, but allowed to float freely.
+=TRANSSZ= - Adjusts size on transient windows that are too small using =dialog_ratio=.
+=ANYWHERE= - Allow window to position itself, uncentered.
+#+end_quote
+
+The syntax is as follows:
+#+begin_quote
+=quirk[class[:instance[:name]]]= = =quirk [+ quirk ...]=
+#+end_quote
+
+#+begin_src conf
+quirk[Lxappearance:lxappearance] = FLOAT
+quirk[Wpg:wpg] = FLOAT
+quirk[Ripcord:ripcord:Preferences] = FLOAT
+quirk[Xephyr:Xephyr] = FLOAT
+quirk[Pcmanfm:pcmanfm] = FLOAT
+quirk[Brave-browser:brave-browser] = TRANSSZ
+quirk[jetbrains-idea-ce:jetbrains-idea-ce] = FLOAT + ANYWHERE
+#+end_src
