@@ -1,0 +1,217 @@
+#+TITLE: Doom Emacs Literate Configuration
+#+AUTHOR: fortuneteller2k
+#+STARTUP: showeverything
+
+* Table of Contents :toc_4:
+- [[#meta][Meta]]
+  - [[#lexical-binding][Lexical Binding]]
+- [[#personal-information][Personal Information]]
+- [[#appearance][Appearance]]
+  - [[#fonts][Fonts]]
+  - [[#theme][Theme]]
+  - [[#dashboard][Dashboard]]
+  - [[#editor][Editor]]
+    - [[#line-numbers][Line Numbers]]
+    - [[#editor-tabs][Editor Tabs]]
+    - [[#discord-rich-presence][Discord Rich Presence]]
+    - [[#modeline][Modeline]]
+      - [[#keycast][Keycast]]
+    - [[#pdfs][PDFs]]
+    - [[#writeroom][Writeroom]]
+    - [[#info-colors][Info Colors]]
+- [[#programming][Programming]]
+  - [[#autocomplete][Autocomplete]]
+  - [[#syntax-checking][Syntax checking]]
+  - [[#org-mode][Org-mode]]
+    - [[#fonts-1][Fonts]]
+    - [[#bullets][Bullets]]
+    - [[#note-taking][Note-taking]]
+- [[#dotfile-management][Dotfile Management]]
+  - [[#spectrwm][SpectrWM]]
+
+* Meta
+** Lexical Binding
+Read more about [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Lexical-Binding.html][lexical binding]].
+#+begin_src elisp
+;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
+#+end_src
+
+* Personal Information
+Set username and e-mail address.
+#+begin_src elisp
+(setq user-full-name "fortuneteller2k"
+      user-mail-address "lythe1107@gmail.com")
+#+end_src
+
+* Appearance
+** Fonts
+Fantasque Sans Mono for our monospaced font, Inter for our variable pitched font, Inter really looks nice for writing documents.
+#+begin_src elisp
+(setq doom-font (font-spec :family "JetBrains Mono" :weight 'Regular :size 14)
+      doom-big-font (font-spec :family "JetBrains Mono" :weight 'Regular :size 16)
+      doom-variable-pitch-font (font-spec :family "Inter" :weight 'Bold :size 20)
+      doom-unicode-font (font-spec :family "Symbola"))
+#+end_src
+
+** Theme
+I used to like =doom-monokai-pro= but now =doom-horizon= looks so nice and clean so I'm using it.
+#+begin_src elisp
+(setq doom-theme 'doom-horizon)
+(delq! t custom-theme-load-path)
+#+end_src
+
+** Dashboard
+Set dashboard icon.
+#+begin_src elisp
+(setq fancy-splash-image (concat doom-private-dir "icons/cacodemon.svg"))
+#+end_src
+
+** Editor
+*** Line Numbers
+Use relative line numbers.
+#+begin_src elisp
+(setq display-line-numbers-type 'relative)
+#+end_src
+
+*** Editor Tabs
+Classic editor tabs like those in Visual Studio Code, IntelliJ IDEA, Sublime Text, and others.
+JetBrains Mono for our tab font since it doesn't look distracting.
+#+begin_src elisp
+(after! centaur-tabs
+  (setq centaur-tabs-height 25
+        centaur-tabs-set-bar 'under
+        x-underline-at-descent-line t
+        centaur-tabs-close-button "x")
+  (centaur-tabs-change-fonts "Fantasque Sans Mono" 110))
+#+end_src
+
+*** Discord Rich Presence
+Discord swag points.
+#+begin_src elisp
+(use-package! elcord
+  :config (elcord-mode 1)
+  :custom (elcord-use-major-mode-as-main-icon t))
+#+end_src
+*** Modeline
+#+begin_src elisp
+(after! doom-modeline
+  (setq doom-modeline-bar-width 3))
+#+end_src
+**** Keycast
+Keycast is a nice minor mode that rests in the modeline that records keybindings being pressed.
+#+begin_src elisp
+(use-package! keycast
+  :commands keycast-mode
+  :config
+  (define-minor-mode keycast-mode
+    "Show current command and its keybinding in the mode line."
+    :global t
+    (if keycast-mode
+        (progn
+          (add-hook 'pre-command-hook 'keycast-mode-line-update t)
+          (add-to-list 'global-mode-string '("" mode-line-keycast " ")))
+      (remove-hook 'pre-command-hook 'keycast-mode-line-update)
+      (setq global-mode-string (remove '("" mode-line-keycast " ") global-mode-string))))
+  (custom-set-faces!
+    '(keycast-command :inherit doom-modeline-debug
+                      :height 0.9)
+    '(keycast-key :inherit custom-modified
+                  :height 1.1
+                  :weight bold)))
+#+end_src
+*** PDFs
+Match PDF background to current theme.
+#+begin_src elisp
+(add-hook 'pdf-view-mode-hook #'pdf-view-midnight-minor-mode)
+#+end_src
+*** Writeroom
+Hide line numbers while in =writeroom-mode=.
+#+begin_src elisp
+(after! writeroom-mode
+  (add-hook 'writeroom-mode-hook
+            (defun +zen-cleaner-org ()
+              (when (and (eq major-mode 'org-mode) writeroom-mode)
+                (setq-local -display-line-numbers display-line-numbers
+                            display-line-numbers nil))))
+  (add-hook 'writeroom-mode-disable-hook
+            (defun +zen-dirty-org ()
+              (when (eq major-mode 'org-mode)
+                (setq-local display-line-numbers -display-line-numbers)))))
+#+end_src
+*** Info Colors
+#+begin_src elisp
+(use-package! info-colors
+  :commands (info-colors-fontify-node))
+
+(add-hook 'Info-selection-hook 'info-colors-fontify-node)
+(add-hook 'Info-mode-hook #'mixed-pitch-mode)
+#+end_src
+
+* Programming
+** Autocomplete
+Company should respond immediately to my input.
+#+begin_src elisp
+(after! company
+  (setq company-idle-delay 0.4
+        company-minimum-prefix-length 1
+        company-selection-wrap-around t))
+#+end_src
+** Syntax checking
+Flycheck should also respond immediately.
+#+begin_src elisp
+(after! flycheck
+  (setq flycheck-check-syntax-automatically '(save idle-change new-line mode-enabled)))
+#+end_src
+** Org-mode
+Set org directory.
+#+begin_src elisp
+(setq org-directory "~/org/")
+#+end_src
+*** Fonts
+Some font configuration to make =org= files look good.
+#+begin_src elisp
+(add-hook! 'org-mode-hook #'+org-pretty-mode #'mixed-pitch-mode)
+
+(after! org
+  (custom-set-faces!
+    '(org-document-title :height 1.2)))
+
+(custom-set-faces!
+  '(outline-1 :weight extra-bold :height 1.25)
+  '(outline-2 :weight bold :height 1.15)
+  '(outline-3 :weight bold :height 1.12)
+  '(outline-4 :weight semi-bold :height 1.09)
+  '(outline-5 :weight semi-bold :height 1.06)
+  '(outline-6 :weight semi-bold :height 1.03)
+  '(outline-8 :weight semi-bold)
+  '(outline-9 :weight semi-bold))
+#+end_src
+*** Bullets
+#+begin_src elisp
+(use-package! org-superstar
+  :custom (org-superstar-item-bullet-alist '((42 . 8226) (43 . 10148) (45 . 8211))))
+
+(add-hook! 'org-mode-hook #'org-superstar-mode #'org-pretty-tags-mode)
+#+end_src
+*** Note-taking
+Use only =org-mode= for Deft.
+#+begin_src elisp
+(setq deft-directory "~/Notes"
+      deft-extensions '("org")
+      deft-recursive t)
+#+end_src
+
+* Dotfile Management
+#+begin_src elisp
+(setq user-dotfiles-directory "/home/fortuneteller2k/.config")
+#+end_src
+** SpectrWM
+Tangle SpectrWM literate config on save.
+#+begin_src elisp
+(defun f2k--tangle-spectrwm-config ()
+  (if (string= buffer-file-name (concat user-dotfiles-directory "/spectrwm/spectrwm.org"))
+      (org-babel-tangle)
+    (ignore)))
+
+(add-hook 'after-save-hook #'f2k--tangle-spectrwm-config)
+#+end_src
