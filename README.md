@@ -12,7 +12,7 @@ the product of countless hours of procrastination
 
 ## showcase
 
-[idle](screenshots/empty.png)
-[floating layout](screenshots/floating.png)
-[master and stack](screenshots/master-and-stack.png)
-[tabbed](screenshots/tabbed.png)
+![idle](screenshots/empty.png)
+![floating layout](screenshots/floating.png)
+![master and stack](screenshots/master-and-stack.png)
+![tabbed](screenshots/tabbed.png)
