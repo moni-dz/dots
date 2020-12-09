@@ -47,8 +47,8 @@ Set username and e-mail address.
 ** Fonts
 Fantasque Sans Mono for our monospaced font, Inter for our variable pitched font, Inter really looks nice for writing documents.
 #+begin_src elisp
-(setq doom-font (font-spec :family "JetBrains Mono" :weight 'Regular :size 14)
-      doom-big-font (font-spec :family "JetBrains Mono" :weight 'Regular :size 16)
+(setq doom-font (font-spec :family "monospace" :weight 'Regular :size 14)
+      doom-big-font (font-spec :family "monospace" :weight 'Regular :size 16)
       doom-variable-pitch-font (font-spec :family "Inter" :weight 'Bold :size 20)
       doom-unicode-font (font-spec :family "Symbola"))
 #+end_src
@@ -82,7 +82,7 @@ JetBrains Mono for our tab font since it doesn't look distracting.
         centaur-tabs-set-bar 'under
         x-underline-at-descent-line t
         centaur-tabs-close-button "x")
-  (centaur-tabs-change-fonts "Fantasque Sans Mono" 110))
+  (centaur-tabs-change-fonts "FantasqueSansMono Nerd Font" 90))
 #+end_src
 
 *** Discord Rich Presence
@@ -130,12 +130,17 @@ Hide line numbers while in =writeroom-mode=.
 (after! writeroom-mode
   (add-hook 'writeroom-mode-hook
             (defun +zen-cleaner-org ()
-              (when (and (eq major-mode 'org-mode) writeroom-mode)
+              (when (and (or
+                          (eq major-mode 'org-mode)
+                          (eq major-mode 'latex-mode))
+                         writeroom-mode)
                 (setq-local -display-line-numbers display-line-numbers
                             display-line-numbers nil))))
   (add-hook 'writeroom-mode-disable-hook
             (defun +zen-dirty-org ()
-              (when (eq major-mode 'org-mode)
+              (when (or
+                     (eq major-mode 'latex-mode)
+                     (eq major-mode 'org-mode))
                 (setq-local display-line-numbers -display-line-numbers)))))
 #+end_src
 *** Info Colors
@@ -202,14 +207,11 @@ Use only =org-mode= for Deft.
 #+end_src
 
 * Dotfile Management
-#+begin_src elisp
-(setq user-dotfiles-directory "/home/fortuneteller2k/.config")
-#+end_src
 ** SpectrWM
 Tangle SpectrWM literate config on save.
 #+begin_src elisp
 (defun f2k--tangle-spectrwm-config ()
-  (if (string= buffer-file-name (concat user-dotfiles-directory "/spectrwm/spectrwm.org"))
+  (if (string= (buffer-name) "spectrwm.org")
       (org-babel-tangle)
     (ignore)))
 

@@ -51,6 +51,7 @@
 (package! ewal-doom-themes)
 (package! elcord)
 (package! systemd)
+(package! xresources-theme)
 (package! keycast)
 (package! org-superstar)
 (package! org-pretty-tags)

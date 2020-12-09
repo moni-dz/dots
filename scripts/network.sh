@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
 while :; do
     # Wired Connection
