@@ -142,7 +142,7 @@ cfg = docks $ ewmh $ def
   , focusedBorderColor = "#fab795"
   , layoutHook         = layouts
   , manageHook         = windowRules
-  , logHook            = fadeInactiveLogHook 0.95 >> masterHistoryHook
+  , logHook            = fadeInactiveLogHook 0.95
   , handleEventHook    = fullscreenEventHook <+> ewmhDesktopsEventHook
   , startupHook        = autostart
   } `additionalKeysP` keybindings
