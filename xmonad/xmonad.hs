@@ -6,6 +6,7 @@ import XMonad.Hooks.EwmhDesktops
 import XMonad.Hooks.FadeInactive
 import XMonad.Hooks.InsertPosition
 import XMonad.Hooks.ManageDocks
+import XMonad.Hooks.ManageHelpers
 import XMonad.Hooks.Place
 import XMonad.Hooks.SetWMName
 
@@ -110,17 +111,19 @@ tabTheme = def
   , urgentTextColor     = "#16161c"
   }
 
-windowRules = insertPosition End Newer -- same effect as attachaside patch in dwm
-  <+> placeHook (smart (0.5, 0.5))
-  <+> manageDocks
+windowRules = placeHook (smart (0.5, 0.5))
   <+> composeAll
   [ className =? "Gimp"                                   --> doFloat
   , (className =? "Ripcord" <&&> title =? "Preferences")  --> doFloat
+  , className =? "Xmessage"                               --> doFloat
   , className =? "Lxappearance"                           --> doFloat
   , className =? "Xephyr"                                 --> doFloat
   , resource  =? "desktop_window"                         --> doIgnore
   , resource  =? "kdesktop"                               --> doIgnore
-  ] <+> manageHook defaultConfig
+  , isDialog                                              --> doF W.swapUp ]
+  <+> insertPosition End Newer -- same effect as attachaside patch in dwm
+  <+> manageDocks
+  <+> manageHook defaultConfig
 
 autostart = do
   spawnOnce "xsetroot -cursor_name left_ptr &"
@@ -139,7 +142,7 @@ cfg = docks $ ewmh $ def
   , focusedBorderColor = "#fab795"
   , layoutHook         = layouts
   , manageHook         = windowRules
-  , logHook            = fadeInactiveLogHook 0.95
+  , logHook            = fadeInactiveLogHook 0.95 >> masterHistoryHook
   , handleEventHook    = fullscreenEventHook <+> ewmhDesktopsEventHook
   , startupHook        = autostart
   } `additionalKeysP` keybindings
