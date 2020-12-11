@@ -27,7 +27,7 @@ import System.Exit
 import qualified XMonad.StackSet as W
 import qualified Data.Map        as M
 
-fontFamily = "xft:FantasqueSansMono Nerd Font:Regular:size=10:antialias=true:hinting=true"
+fontFamily = "xft:FantasqueSansMono Nerd Font:bold:size=10:antialias=true:hinting=true"
 
 keybindings =
   [ ("M-<Return>",                 spawn "alacritty")
@@ -110,8 +110,8 @@ tabTheme = def
   , urgentTextColor     = "#16161c"
   }
 
-windowRules = placeHook (smart (0.5, 0.5))
-  <+> insertPosition End Newer -- same effect as attachaside patch in dwm
+windowRules = insertPosition End Newer -- same effect as attachaside patch in dwm
+  <+> placeHook (smart (0.5, 0.5))
   <+> manageDocks
   <+> composeAll
   [ className =? "Gimp"                                   --> doFloat
@@ -139,7 +139,7 @@ cfg = docks $ ewmh $ def
   , focusedBorderColor = "#fab795"
   , layoutHook         = layouts
   , manageHook         = windowRules
-  , logHook            = fadeInactiveLogHook 0.97
+  , logHook            = fadeInactiveLogHook 0.95
   , handleEventHook    = fullscreenEventHook <+> ewmhDesktopsEventHook
   , startupHook        = autostart
   } `additionalKeysP` keybindings
