@@ -10,6 +10,7 @@ import XMonad.Hooks.ManageHelpers
 import XMonad.Hooks.Place
 import XMonad.Hooks.SetWMName
 
+import XMonad.Layout.NoBorders
 import XMonad.Layout.Spacing
 import XMonad.Layout.Tabbed
 import XMonad.Layout.ToggleLayouts
@@ -91,12 +92,13 @@ promptConfig = def
 
 layouts = avoidStruts
           $ spacingRaw False (Border 6 6 6 6) True (Border 2 2 2 2) True
-          $ toggleLayouts Full tiled ||| tabbed shrinkText tabTheme
+          $ toggleLayouts maximized tiled ||| noBorders (tabbed shrinkText tabTheme)
   where
-     tiled = Tall nmaster delta ratio
+     tiled = smartBorders (Tall nmaster delta ratio)
      nmaster = 1
      ratio = toRational (2/(1+sqrt(5)::Double)) -- inverse golden ratio
      delta = 3/100
+     maximized = smartBorders Full
 
 tabTheme = def
   { fontName            = fontFamily
