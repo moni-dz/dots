@@ -29,6 +29,9 @@ import System.Exit
 import qualified XMonad.StackSet as W
 import qualified Data.Map        as M
 
+-- 10 workspaces should be enough
+ws = ["A","B","C","D","E","F","G","H","I","J"]
+
 fontFamily = "xft:FantasqueSansMono Nerd Font:bold:size=10:antialias=true:hinting=true"
 
 keybindings =
@@ -46,8 +49,8 @@ keybindings =
   , ("M-t",                        withFocused toggleFloat)
   , ("M-,",                        sendMessage (IncMasterN 1))
   , ("M-.",                        sendMessage (IncMasterN (-1)))
-  , ("M-<Left>",                   prevWS)
-  , ("M-<Right>",                  nextWS)
+  , ("C-<Left>",                   prevWS)
+  , ("C-<Right>",                  nextWS)
   , ("<Print>",                    spawn "/home/fortuneteller2k/.config/scripts/screenshot.sh wind")
   , ("M-<Print>",                  spawn "/home/fortuneteller2k/.config/scripts/screenshot.sh area")
   , ("M-S-s",                      spawn "/home/fortuneteller2k/.config/scripts/screenshot.sh full")
@@ -57,13 +60,19 @@ keybindings =
   , ("M-S-r",                      spawn $ "xmonad --recompile && xmonad --restart")
   , ("M-S-<Left>",                 shiftToPrev >> prevWS)
   , ("M-S-<Right>",                shiftToNext >> nextWS)
-  , ("C-<Left>",                   windows W.focusUp)
-  , ("C-<Right>",                  windows W.focusDown)
+  , ("M-<Left>",                   windows W.focusUp)
+  , ("M-<Right>",                  windows W.focusDown)
   , ("<XF86AudioMute>",            spawn "/home/fortuneteller2k/.config/scripts/volume.sh mute")
   , ("<XF86AudioRaiseVolume>",     spawn "/home/fortuneteller2k/.config/scripts/volume.sh up")
   , ("<XF86AudioLowerVolume>",     spawn "/home/fortuneteller2k/.config/scripts/volume.sh down")
   , ("<XF86MonBrightnessUp>",      spawn "xbacklight -inc 10")
   , ("<XF86MonBrightnessDown>",    spawn "xbacklight -dec 10")
+  ]
+  ++
+  [ (otherModMasks ++ "M-" ++ key, action tag)
+      | (tag, key)  <- zip ws (map (\x -> show x) ([1..9] ++ [0]))
+      , (otherModMasks, action) <- [ ("", windows . W.greedyView)
+                                   , ("S-", windows . W.shift)]
   ]
   where
     toggleFloat w = windows (\s -> if M.member w (W.floating s)
@@ -139,7 +148,7 @@ cfg = docks $ ewmh $ def
   { focusFollowsMouse  = True
   , borderWidth        = 2
   , modMask            = mod1Mask
-  , workspaces         = ["A","B","C","D","E","F","G","H","I"]
+  , workspaces         = ws
   , normalBorderColor  = "#16161c"
   , focusedBorderColor = "#fab795"
   , layoutHook         = layouts
