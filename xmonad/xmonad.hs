@@ -70,7 +70,7 @@ keybindings =
   ]
   ++
   [ (otherModMasks ++ "M-" ++ key, action tag)
-      | (tag, key)  <- zip ws (map (\x -> show x) ([1..9] ++ [0]))
+      | (tag, key) <- zip ws (map (\x -> show x) ([1..9] ++ [0]))
       , (otherModMasks, action) <- [ ("", windows . W.greedyView)
                                    , ("S-", windows . W.shift)]
   ]
@@ -131,7 +131,7 @@ windowRules = placeHook (smart (0.5, 0.5))
   , className =? "Xephyr"                                 --> doFloat
   , resource  =? "desktop_window"                         --> doIgnore
   , resource  =? "kdesktop"                               --> doIgnore
-  , isDialog                                              --> doF W.swapUp ]
+  , isDialog                                              --> doF W.swapUp <+> doFloat ]
   <+> insertPosition End Newer -- same effect as attachaside patch in dwm
   <+> manageDocks
   <+> manageHook defaultConfig
