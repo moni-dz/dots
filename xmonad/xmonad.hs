@@ -32,7 +32,7 @@ import qualified Data.Map        as M
 -- 10 workspaces should be enough
 ws = ["A","B","C","D","E","F","G","H","I","J"]
 
-fontFamily = "xft:FantasqueSansMono Nerd Font:bold:size=10:antialias=true:hinting=true"
+fontFamily = "xft:FantasqueSansMono Nerd Font:size=10:antialias=true:hinting=true"
 
 keybindings =
   [ ("M-<Return>",                 spawn "alacritty")
@@ -83,9 +83,9 @@ promptConfig = def
   { font                = fontFamily
   , bgColor             = "#16161c"
   , fgColor             = "#fdf0ed"
-  , bgHLight            = "#fab795"
+  , bgHLight            = "#26bbd9"
   , fgHLight            = "#16161c"
-  , borderColor         = "#fab795"
+  , borderColor         = "#26bbd9"
   , promptBorderWidth   = 0
   , position            = Top
   , height              = 20
@@ -100,7 +100,7 @@ promptConfig = def
   }
 
 layouts = avoidStruts
-          $ spacingRaw False (Border 6 6 6 6) True (Border 2 2 2 2) True
+          $ spacingRaw False (Border 4 4 4 4) True (Border 4 4 4 4) True
           $ toggleLayouts maximized tiled ||| noBorders (tabbed shrinkText tabTheme)
   where
      tiled = smartBorders (Tall nmaster delta ratio)
@@ -111,10 +111,10 @@ layouts = avoidStruts
 
 tabTheme = def
   { fontName            = fontFamily
-  , activeColor         = "#fab795"
+  , activeColor         = "#26bbd9"
   , inactiveColor       = "#16161c"
   , urgentColor         = "#e95678"
-  , activeBorderColor   = "#fab795"
+  , activeBorderColor   = "#26bbd9"
   , inactiveBorderColor = "#16161c"
   , urgentBorderColor   = "#e95678"
   , activeTextColor     = "#16161c"
@@ -127,7 +127,7 @@ windowRules = placeHook (smart (0.5, 0.5))
   [ className =? "Gimp"                                   --> doFloat
   , (className =? "Ripcord" <&&> title =? "Preferences")  --> doFloat
   , className =? "Xmessage"                               --> doFloat
-  , className =? "Lxappearance"                           --> doFloat
+  , className =? "Peek"                                   --> doFloat
   , className =? "Xephyr"                                 --> doFloat
   , resource  =? "desktop_window"                         --> doIgnore
   , resource  =? "kdesktop"                               --> doIgnore
@@ -145,11 +145,11 @@ autostart = do
 
 cfg = docks $ ewmh $ def
   { focusFollowsMouse  = True
-  , borderWidth        = 2
+  , borderWidth        = 1
   , modMask            = mod1Mask
   , workspaces         = ws
   , normalBorderColor  = "#16161c"
-  , focusedBorderColor = "#fab795"
+  , focusedBorderColor = "#26bbd9"
   , layoutHook         = layouts
   , manageHook         = windowRules
   , logHook            = fadeInactiveLogHook 0.95
