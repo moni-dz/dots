@@ -1,0 +1,33 @@
+#!/bin/sh
+
+tmpfile="$(mktemp -p /tmp nekofetchXXXXXXXX)"
+
+case "$1" in
+    "--nsfw"|"nsfw"|"-n"|"n")
+        echo "Getting a nsfw image"
+        imgurl="https://nekos.life/api/v2/img/cum_jpg"
+        ;;
+    "--sfw"|"sfw"|"-s"|"s")
+        echo "Getting a sfw image"
+        imgurl="https://nekos.life/api/v2/img/neko"
+        ;;
+    *)
+        echo "Could not interpret as either sfw or nsfw. Defaulting to sfw."
+        imgurl="https://nekos.life/api/v2/img/neko"
+        ;;
+esac
+
+echo "$2" | grep -qE '^[0-9]+$' && height="$2" || height="$(($(stty size | awk '{print $1}') - 5))"
+echo "Using height $height"
+
+url=$(curl -fsSL "$imgurl" | jq -r ".url")
+
+curl -fsSLo "$tmpfile.jpg" "$url"
+if [ "$TERM" = "xterm-kitty" ]; then
+    neofetch --kitty "$tmpfile.jpg"
+else
+    jp2a --height="$height" "$tmpfile.jpg" > "$tmpfile"
+    neofetch --source "$tmpfile"
+fi
+
+rm "$tmpfile" "$tmpfile.jpg"
