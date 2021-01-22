@@ -1,1 +1,10 @@
-/nix/store/5inc7zv4di2ab0q7fwf91knbgj82lyrw-home-manager-files/.config/ncmpcpp/config
+execute_on_song_change=notify-desktop "Now Playing" "$(mpc --format '\n%title%\n%artist%' current)"
+mpd_music_dir=/home/fortuneteller2k/Music
+user_interface=alternative
+visualizer_autoscale=yes
+visualizer_data_source=/tmp/mpd.fifo
+visualizer_fps=60
+visualizer_in_stereo=yes
+visualizer_look=+*
+visualizer_output_name=mpd_visualizer_fifo
+visualizer_type=ellipse
