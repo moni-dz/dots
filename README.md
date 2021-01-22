@@ -15,3 +15,4 @@ the product of countless hours of procrastination
 ![idle](screenshots/empty.png)
 ![ncmpcpp](screenshots/ncmpcpp.png)
 ![busy](screenshots/neovim.png)
+![emacs-and-vim](screenshots/emacs-and-vim.png)
