@@ -1,10 +1,11 @@
 [bar/main]
 background=${colors.bg}
-border-color=${colors.bg}
+border-color=${colors.xbg}
 border-size=0
 enable-ipc=true
 fixed-center=true
 font-0=FantasqueSansMono Nerd Font:size=10.5;2
+font-1=M+ 2m:size=10.5;3
 foreground=${colors.x7}
 height=17
 locale=en_US.UTF-8
@@ -12,7 +13,6 @@ modules-center=mpd
 modules-left=wspc ewmh xmonad
 modules-right=battery wspc_b pulseaudio wspc_b wireless wspc_b date
 override-redirect=true
-padding=1
 separator=
 width=100%
 wm-name=xmonad
@@ -60,7 +60,7 @@ ramp-capacity-9="  "
 type=internal/battery
 
 [module/date]
-date="   %b %d %Y"
+date="   %m/%d/%Y"
 format=<label>
 format-background=${colors.primary}
 format-foreground=${colors.xbg}
@@ -132,7 +132,7 @@ use-ui-max=true
 format-connected=<label-connected>
 format-connected-background=${colors.primary}
 format-connected-foreground=${colors.xbg}
-format-disconnected="<label-disconnected> "
+format-disconnected=<label-disconnected>
 format-disconnected-background=${colors.primary}
 format-disconnected-foreground=${colors.xbg}
 interface=wlo1
@@ -164,4 +164,3 @@ type=custom/script
 
 [settings]
 pseudo-transparency=true
-
