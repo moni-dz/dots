@@ -2,6 +2,8 @@
 
 the product of countless hours of procrastination
 
+for an [up-to-date version](https://github.com/fortuneteller2k/nix-config) in Nix
+
 | item     | program       |
 |----------|---------------|
 | WM       | xmonad        |
